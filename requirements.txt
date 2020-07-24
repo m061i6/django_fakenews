@@ -42,7 +42,7 @@ python-dateutil==2.6.1
 python-Levenshtein==0.12.0
 python-openid==2.2.5
 pytz==2020.1
-PyYAML==3.13
+PyYAML==5.1
 reportlab==3.5.31
 s3transfer==0.1.11
 scandir==1.5
