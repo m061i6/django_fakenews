@@ -2,7 +2,7 @@ absl-py==0.9.0
 astor==0.8.1
 boto3==1.4.7
 botocore==1.7.43
-Django==2.2.9
+Django==2.2.13
 docutils==0.12
 elementtree===1.2.7-20070827-preview
 gast==0.2.2
