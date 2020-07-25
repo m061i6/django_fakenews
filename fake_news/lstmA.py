@@ -21,9 +21,10 @@ module_dir = os.path.join(priject_dir, 'model')
 def predict(request):
     res_data = {}
     res_data['success'] = False 
-    print(request.POST)
+    # print(request.POST)
     if request.POST:
         ans = request.POST.get('input_text')
+        # print(f'request:{ans}')
         res_data['input_text'] = ans
         lstm_data = getLSTMPredict(ans)
         if lstm_data['success']:
@@ -65,9 +66,10 @@ def getLSTMPredict(ans):
     def clean_text(text_string):
         text_string = re.sub(r'[^\u4e00-\u9fa5]+', '', text_string)
         return(text_string)
- 
+    
+    # ans='又到了四年一度的閏年。在許多歐洲國家，2月29日是女性專屬的求婚日，在這天求婚不只不會被貼上標籤，男生如果拒絕還得受罰！女性選在閏年向男性求婚的習俗從何而來？最常見的說法是源自5世紀的愛爾蘭。據傳聖布麗姬（St. Brigid）向聖派翠克主教（St. Patrick）抱怨，女生等男生求婚要等很久，於是主教就規定在閏年的2月29日，女性可以求婚。後來這項規範傳入蘇格蘭，瑪格麗特皇后（Queen Margaret）據此頒布法令，讓蘇格蘭女性可以在229當天向男性求婚，而且對方如過拒絕還要受罰。男生如果拒絕求婚，就要給女方一個吻或一件絲綢洋裝，或是一雙手套。在部分上層歐洲社會中，還要給到12雙手套，這樣才能讓女生把手遮起來，避免被別人發現沒戴婚戒。至於為什麼會有罰男方獻吻的說法，則是因為有一說是聖派翠克主教一答應讓女生求婚，聖布麗姬立刻下跪向主教求婚，主教拒絕了，但給她一個吻並送她一件絲綢長袍。不過上述故事應該都是杜撰的。聖布麗姬不一定是真實存在的人物，就算真有其人，聖派翠克主教過世的時候，聖布麗姬也還是個未滿10歲的小女孩。瑪格麗特皇后則是7歲就過世了，不太可能真的立過這條法令。女生229才能求婚引發平權爭議不管實際上是怎麼開始的，這套傳統就此傳承了下來。但隨著兩性平權的意識越來越普及，女性選在閏年求婚的說法也遭受了抨擊。熟悉這個傳統的美國學者柏金（Katherine Parkin）就認為，在這個女性地位逐漸提升的年代，特別准許女生每四年可以求婚一次，實在可笑，甚至有羞辱之嫌。但也有人認為，這項傳統的存在其實也是在鼓勵女性拋開傳統枷鎖，當她們所愛的人不敢開口的時候，勇敢站出來主導情勢，從這點來看或許也沒有這麼違反女權的概念。實際上還真的蠻多女生挑在229求婚的。2008年，來自英國的梅特卡夫（Sally Metcalf）就選在那一天向長跑10年的男友求婚成功。她說，「哪一天都好，不過在2月29日訂婚確實讓我覺得我們蠻特別的。」她也鼓勵其他女性不要再等了，直接開口問，只要對方愛你，就不該拒絕。在愛爾蘭和芬蘭，也有很多人相信229是個求婚幸運日，愛爾蘭更有一說是在229求婚可以降低未來的離婚機率。可惜沒有統計數據證明在閏年結婚或訂婚的人比較有可能白頭偕老，在男女平等的時代，誰開口似乎也沒那麼重要。但是女孩，如果妳一直找不到機會或提不起勇氣，不妨就選在這個連假給親愛的他一個驚喜吧！閏年傳統番外篇：有人相信229是幸運日，但也有人認為229這個多餘的日子很邪門。依據希臘傳統，如果在閏年結婚，以後就會離婚。選在閏年離婚的人，這輩子再也沒辦法找到幸福了。參考資料：華爾街日報、Irish Central、HuffPost、timeanddate.com'
     ans = clean_text(str(ans))
-
+    
     ans_seg=[]
     ans_seg.append((' '.join([j for j in jieba.cut_for_search(ans) if j not in stopwords])))
     # ans_seg.append((' '.join([j for j in jieba.cut(ans, cut_all=False) if j not in stopwords])))

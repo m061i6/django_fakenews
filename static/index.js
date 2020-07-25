@@ -55,7 +55,6 @@ function startpredict(input_text){
             credentials: "same-origin",
             headers: {
                 "X-CSRFToken": getCookie("csrftoken"),
-                'Content-Type':'application/x-www-form-urlencoded'
             },
             body: form_data,
         })
