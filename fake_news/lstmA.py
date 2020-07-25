@@ -29,7 +29,7 @@ def predict(request):
         if lstm_data['success']:
             res_data['success'] = True 
             res_data['result'] = lstm_data['result']
-            res_data['cinfidence'] = lstm_data['cinfidence']
+            res_data['confidence'] = lstm_data['confidence']
         # bert_data = getBERTPredict(ans)
         # print(f'lstm_data:{lstm_data}')
     return JsonResponse(res_data)
@@ -43,8 +43,8 @@ def getLSTMPredict(ans):
             if len(line)>0:
                 stopwords.append(line.strip())
     class Config():
-        max_sequence_length = 800 # 最長序列長度為n個字
-        min_word_frequency = 5 # 出現頻率小於n的話 ; 就當成罕見字
+        max_sequence_length = 500 # 最長序列長度為n個字
+        min_word_frequency = 3 # 出現頻率小於n的話 ; 就當成罕見字
         
         vocab_size = None
         category_num = None
@@ -65,11 +65,12 @@ def getLSTMPredict(ans):
     def clean_text(text_string):
         text_string = re.sub(r'[^\u4e00-\u9fa5]+', '', text_string)
         return(text_string)
-
+ 
     ans = clean_text(str(ans))
 
     ans_seg=[]
-    ans_seg.append((' '.join([j for j in jieba.cut(ans, cut_all=False) if j not in stopwords])))
+    ans_seg.append((' '.join([j for j in jieba.cut_for_search(ans) if j not in stopwords])))
+    # ans_seg.append((' '.join([j for j in jieba.cut(ans, cut_all=False) if j not in stopwords])))
     len(ans_seg)
 
     y1=[1]
@@ -84,7 +85,7 @@ def getLSTMPredict(ans):
     class TextRNN(object):
         def __init__(self, config):
             self.config = config
-            
+        
             # 四個等待輸入的data
             self.batch_size = tf.placeholder(tf.int32, [] , name = 'batch_size')
             self.keep_prob = tf.placeholder(tf.float32, [], name = 'keep_prob')
@@ -107,7 +108,7 @@ def getLSTMPredict(ans):
                 LSTM_cell = rnn.GRUCell(num_units)
 
             return rnn.DropoutWrapper(LSTM_cell, output_keep_prob = self.keep_prob)
-        
+    
         def rnn(self):
             """RNN模型"""
             # 詞向量映射
@@ -125,7 +126,7 @@ def getLSTMPredict(ans):
                     init_state = LSTM_cells.zero_state(self.batch_size, dtype = tf.float32)
                     outputs, final_state = tf.nn.dynamic_rnn(LSTM_cells, inputs = embedding_inputs, 
                                                             initial_state = init_state, time_major = False, dtype = tf.float32)
-                    
+                
             # Output Layer
             with tf.name_scope('output_layer'):
                 # 全連接層，後面接dropout以及relu激活
@@ -135,13 +136,13 @@ def getLSTMPredict(ans):
                     
                 # 分類器
                 y = tf.layers.dense(fc1, self.config.category_num, name = 'y')
-            
+        
             self.y_pred_cls = tf.argmax(y, axis = 1) #預測類別
             with tf.name_scope('cross_entropy'):
                 with tf.name_scope('total'):
                     self.softmax = tf.nn.softmax_cross_entropy_with_logits(labels = self.y_label, logits = y)
                     self.cross_entropy = tf.reduce_mean(self.softmax)
-
+                    self.y=tf.nn.softmax(y) 
             with tf.name_scope('train'):
                 self.train_step = tf.train.AdamOptimizer(self.config.learning_rate).minimize(self.cross_entropy)
 
@@ -164,14 +165,14 @@ def getLSTMPredict(ans):
         sess.run(tf.global_variables_initializer())
         saver = tf.train.Saver()
         saver.restore(sess = sess, save_path = config.save_path)  # 讀取保存的模型
-        test_loss, test_acc, test_predict_label, softmax_result = sess.run([model.cross_entropy, model.accuracy, model.y_pred_cls, model.softmax], feed_dict = feedData(ans, y,1.0 ,ans.shape[0], model))    
+        test_loss, test_acc, test_predict_label,y  = sess.run([model.cross_entropy, model.accuracy, model.y_pred_cls,model.y], feed_dict = feedData(ans, y,1.0 ,ans.shape[0], model))    
+        confidence = float(np.max(y))
+        print(ans)
         if test_predict_label==0:
             data['result'] = False
-            data['cinfidence'] = str(float(softmax_result))
-            # print('有'+str(float(softmax_result))+'是假新聞')
         else:
             data['result'] = True
-            data['cinfidence'] = str(float(softmax_result))
-            # print('有'+str(float(softmax_result))+'是真新聞唷')
+        data['confidence'] = confidence
+        print(f'判斷:{test_predict_label},信心:{confidence}')
         data['success'] = True 
         return data

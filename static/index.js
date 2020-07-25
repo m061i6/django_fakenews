@@ -79,8 +79,8 @@ function showResult(res){
         label = '<span class="btn-danger">假</span>';
     }
     let title = '判斷結果為'+label;
-    // let info = '信心指數'+res.cinfidence+'%'
-    let info = '信心指數 78.92283916%'
+    let info = '信心指數'+Number(res.confidence*100).toFixed(2)+'%'
+    // let info = '信心指數 78.92283916%'
     $('#title').html(title);
     $('#info').html(info);
 }
