@@ -14,3 +14,5 @@ python3 manage.py runserver 0.0.0.0:8000
 振興券千萬不要折起來 ，也不能有髒污，否則銀行、店家會拒收？
 
 中國駐休斯敦領館被迫閉館
+
+0726 [demo影片](https://drive.google.com/file/d/1yw8PO6Tywz8Ps4aH9eMYkrUgDIJ3314j/view?usp=sharing)
