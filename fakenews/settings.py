@@ -25,7 +25,7 @@ SECRET_KEY = '1lxe!r*estpy2hv9%8!8rk+a-4gjr9s-=y(t(de$unhkx4f$7g'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]','13.209.141.139']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]','13.209.141.139','fakenews.nctu.me']
 
 
 # Application definition
