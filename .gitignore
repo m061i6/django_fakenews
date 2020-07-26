@@ -19,3 +19,4 @@ po/model/0715/model.data-00000-of-00001
 venv/
 __pycache__
 __pycache__/*
+bert/
