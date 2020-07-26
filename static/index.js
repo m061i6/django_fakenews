@@ -63,7 +63,13 @@ function startpredict(input_text){
         .then(result  => {
             res = result;
             console.log(res);
-            showResult(res);
+            if(res.error)
+            {
+                showError(res);
+            }
+            else{
+                showResult(res);
+            }
         })
 }
 function showResult(res){
@@ -77,9 +83,17 @@ function showResult(res){
     else{
         label = '<span class="btn-danger">假</span>';
     }
-    let title = '判斷結果為'+label;
+    let title = '判斷結果<span class="btn-info">可能</span>為'+label;
     let info = '信心指數'+Number(res.confidence*100).toFixed(2)+'%'
     // let info = '信心指數 78.92283916%'
     $('#title').html(title);
     $('#info').html(info);
+}
+function showError(res){
+    $('.result').show();
+    $('.loading').hide();
+    $('.finish').show();
+    let title = '<span class="btn-danger">'+res.error+'</span>';
+    $('#title').html(title);
+    $('#info').html('');
 }

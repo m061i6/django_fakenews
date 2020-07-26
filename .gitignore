@@ -14,7 +14,8 @@ package-lock.json
 node_modules
 .ipynb_checkpoints
 *.npy
-lstm/
+lstmA/
+lstmB/
 po/model/0715/model.data-00000-of-00001
 venv/
 __pycache__
