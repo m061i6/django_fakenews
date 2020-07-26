@@ -1,39 +1,13 @@
-from django.http import HttpResponse , JsonResponse , HttpRequest
-from django.shortcuts import render
-from django.template import loader
-import random
-
 import jieba
-import pandas as pd # 引用套件並縮寫為 pd
 import os
 import numpy as np
 import re
 import tensorflow as tf
-import time
-from datetime import timedelta
-import tensorflow as tf
-import numpy as np
 from tensorflow.contrib import rnn
 
 priject_dir = os.path.dirname(__file__)  # get current directory
 module_dir = os.path.join(priject_dir, 'model')
 
-def predict(request):
-    res_data = {}
-    res_data['success'] = False 
-    # print(request.POST)
-    if request.POST:
-        ans = request.POST.get('input_text')
-        # print(f'request:{ans}')
-        res_data['input_text'] = ans
-        lstm_data = getLSTMPredict(ans)
-        if lstm_data['success']:
-            res_data['success'] = True 
-            res_data['result'] = lstm_data['result']
-            res_data['confidence'] = lstm_data['confidence']
-        # bert_data = getBERTPredict(ans)
-        # print(f'lstm_data:{lstm_data}')
-    return JsonResponse(res_data)
 
 def getLSTMPredict(ans):
     stopwords=[]
@@ -72,7 +46,6 @@ def getLSTMPredict(ans):
     
     ans_seg=[]
     ans_seg.append((' '.join([j for j in jieba.cut_for_search(ans) if j not in stopwords])))
-    # ans_seg.append((' '.join([j for j in jieba.cut(ans, cut_all=False) if j not in stopwords])))
     len(ans_seg)
 
     y1=[1]
