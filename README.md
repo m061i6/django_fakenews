@@ -1,4 +1,6 @@
 # django_fakenews
+[主控台](https://lightsail.aws.amazon.com/ls/webapp/home/instances)
+
 
 cd /opt/bitnami/apps/django/django_projects/fakenews/
 
