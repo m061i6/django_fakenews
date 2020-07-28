@@ -142,14 +142,14 @@ def getLSTMPredict(ans):
         saver.restore(sess = sess, save_path = config.save_path)  # 讀取保存的模型
         test_loss, test_acc, test_predict_label,y  = sess.run([model.cross_entropy, model.accuracy, model.y_pred_cls,model.y], feed_dict = feedData(ans, y,1.0 ,ans.shape[0], model))    
         confidence = float(np.max(y))
-        print(f'lstmA.confidence:{confidence}')
+        # print(f'lstmA.confidence:{confidence}')
         # print(ans)
         if test_predict_label==0:
             data['result'] = False
         else:
             data['result'] = True
-        if confidence == 0.854579508304596:
-            confidence=0
+        # if confidence == 0.854579508304596:
+        #     confidence=0
         data['confidence'] = confidence
         # print(f'判斷:{test_predict_label},信心:{confidence}')
         data['success'] = True 
