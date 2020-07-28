@@ -13,8 +13,10 @@ priject_dir = os.path.dirname(__file__)  # get current directory
 module_dir = os.path.join(priject_dir, 'model')
 
 def getBERTPredict(ans):
+    return_data={}
     #網頁輸入資料，看這部分就要麻煩看如何改成Django的網頁輸入值
     input_text=ans
+    # print(f'input_text:{input_text}')
     input_id='1'
     module_bert_dir = os.path.join(module_dir, 'bert')
 
@@ -25,7 +27,7 @@ def getBERTPredict(ans):
     df_input = df_input.sample(frac=SAMPLE_FRAC, random_state=9527)
     df_input.columns = ["text",'Id']
     df_input.to_csv(os.path.join(module_bert_dir, "input_project.tsv"), sep="\t", index=False)
-    print("輸入樣本數：", len(df_input))
+    # print("輸入樣本數：", len(df_input))
 
     #指定繁簡中⽂ BERT-BASE 預訓練模型
     PRETRAINED_MODEL_NAME = "bert-base-chinese" 
@@ -41,8 +43,8 @@ def getBERTPredict(ans):
             assert mode in ["train_project", "test_project","input_project"]  # 一般訓練你會需要 dev set
             self.mode = mode
             # 大數據你會需要用 iterator=True
-            print(f'mode={mode}')
-            self.df = pd.read_csv(mode + ".tsv", sep="\t").fillna("")
+            # print(f'mode={mode}')
+            self.df = pd.read_csv(os.path.join(module_bert_dir, mode + ".tsv"), sep="\t").fillna("")
             self.len = len(self.df)
             self.label_map = { 'fn' : 0, 'tn' : 1}
             self.tokenizer = tokenizer  # 我們將使用 BERT tokenizer
@@ -116,7 +118,7 @@ def getBERTPredict(ans):
         
         return tokens_tensors, segments_tensors, masks_tensors, label_ids
 
-    model=torch.load(os.path.join(module_bert_dir, 'BERT_LEE.pth'))
+    model=torch.load(os.path.join(module_bert_dir, 'BERT_LEE.pth'),map_location='cpu')
 
     def get_predictions(model, dataloader, compute_acc=False):
         predictions = None
@@ -170,5 +172,12 @@ def getBERTPredict(ans):
     df['Category'] = df.Category.apply(lambda x: index_map[x])
     df_pred = pd.concat([inputset.df.loc[:, ["Id"]], 
                             df.loc[:, 'Category']], axis=1)
-    data['success'] = True 
-    print(df_pred)
+    # data['success'] = True 
+    # print(f'df_pred===={df_pred}')
+    if df_pred.iloc[0:1]['Category'].values=='tn':
+        return_data['result'] = True
+    else:
+        return_data['result'] = False
+    return_data['confidence'] = 0.0
+    return_data['success'] = True 
+    return return_data
