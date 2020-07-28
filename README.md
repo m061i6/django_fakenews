@@ -6,7 +6,7 @@ cd /opt/bitnami/apps/django/django_projects/fakenews/
 
 python3 manage.py runserver 0.0.0.0:8000
 
-
+### urls.py 切換2模型或3模型版本
 ## [網站](http://fakenews.nctu.me:8000/)
 
 ## 範例文字:
